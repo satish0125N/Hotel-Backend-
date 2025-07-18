@@ -1,0 +1,82 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model bookings {
+  id               Int      @id @default(autoincrement())
+  user_id          Int
+  room_id          Int
+  checkin_date     DateTime @db.Date
+  checkout_date    DateTime @db.Date
+  number_of_guests Int
+  total_price      Decimal  @db.Decimal(10, 2)
+
+  @@index([room_id], map: "room_id")
+  @@index([user_id], map: "user_id")
+}
+
+model hotel_info {
+  id             Int       @id @default(autoincrement())
+  hotel_name     String    @default("Grand Hotel") @db.VarChar(255)
+  description    String?   @db.Text
+  address        String?   @db.Text
+  phone          String?   @db.VarChar(20)
+  email          String?   @db.VarChar(100)
+  website        String?   @db.VarChar(255)
+  check_in_time  String?   @default("2:00 PM") @db.VarChar(20)
+  check_out_time String?   @default("12:00 PM") @db.VarChar(20)
+  amenities      Json?
+  social_media   Json?
+  created_at     DateTime? @default(now()) @db.Timestamp(0)
+  updated_at     DateTime? @default(now()) @db.Timestamp(0)
+}
+
+model password_resets {
+  id         Int       @id @default(autoincrement())
+  email      String    @db.VarChar(255)
+  token      String    @db.VarChar(255)
+  expires_at DateTime  @db.Timestamp(0)
+  created_at DateTime? @default(now()) @db.Timestamp(0)
+  used       Boolean?  @default(false)
+
+  @@index([email], map: "idx_email")
+  @@index([token], map: "idx_token")
+}
+
+model room_images {
+  id            Int    @id @default(autoincrement())
+  room_id       Int
+  image_url     String @db.VarChar(255)
+  display_order Int?   @default(0)
+
+  @@index([room_id], map: "room_id")
+}
+
+model rooms {
+  id              Int     @id @default(autoincrement())
+  room_type       String  @db.VarChar(255)
+  capacity        Int
+  price_per_night Decimal @db.Decimal(10, 2)
+  amenities       String? @db.Text
+  image_url       String? @db.VarChar(255)
+  images          Json?
+}
+
+model users {
+  id            Int       @id @default(autoincrement())
+  username      String    @unique(map: "username") @db.VarChar(255)
+  password      String    @db.VarChar(255)
+  email         String    @unique(map: "email") @db.VarChar(255)
+  full_name     String    @db.VarChar(255)
+  phone         String?   @db.VarChar(20)
+  address       String?   @db.Text
+  date_of_birth DateTime? @db.Date
+  role          String    @default("guest") @db.VarChar(50)
+  created_at    DateTime? @default(now()) @db.Timestamp(0)
+  updated_at    DateTime? @default(now()) @db.Timestamp(0)
+}

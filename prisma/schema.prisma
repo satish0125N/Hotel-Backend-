@@ -16,32 +16,35 @@ model bookings {
   number_of_guests Int
   total_price      Decimal  @db.Decimal(10, 2)
 
+  user users @relation(fields: [user_id], references: [id])
+  room rooms @relation("RoomBookings", fields: [room_id], references: [id])
+
   @@index([room_id], map: "idx_bookings_room_id")
   @@index([user_id], map: "idx_bookings_user_id")
 }
 
 model hotel_info {
   id             Int       @id @default(autoincrement())
-  hotel_name     String    @default("Grand Hotel") @db.VarChar(255)
-  description    String?   @db.Text
-  address        String?   @db.Text
-  phone          String?   @db.VarChar(20)
-  email          String?   @db.VarChar(100)
-  website        String?   @db.VarChar(255)
-  check_in_time  String?   @default("2:00 PM") @db.VarChar(20)
-  check_out_time String?   @default("12:00 PM") @db.VarChar(20)
+  hotel_name     String    @default("Grand Hotel")
+  description    String?
+  address        String?
+  phone          String?
+  email          String?
+  website        String?
+  check_in_time  String?   @default("2:00 PM")
+  check_out_time String?   @default("12:00 PM")
   amenities      Json?
   social_media   Json?
-  created_at     DateTime? @default(now()) @db.Timestamp(0)
-  updated_at     DateTime? @default(now()) @db.Timestamp(0)
+  created_at     DateTime? @default(now())
+  updated_at     DateTime? @default(now())
 }
 
 model password_resets {
   id         Int       @id @default(autoincrement())
-  email      String    @db.VarChar(255)
-  token      String    @db.VarChar(255)
-  expires_at DateTime  @db.Timestamp(0)
-  created_at DateTime? @default(now()) @db.Timestamp(0)
+  email      String
+  token      String
+  expires_at DateTime
+  created_at DateTime? @default(now())
   used       Boolean?  @default(false)
 
   @@index([email], map: "idx_passwordresets_email")
@@ -51,32 +54,39 @@ model password_resets {
 model room_images {
   id            Int    @id @default(autoincrement())
   room_id       Int
-  image_url     String @db.VarChar(255)
+  image_url     String
   display_order Int?   @default(0)
+
+  room rooms @relation(fields: [room_id], references: [id])
 
   @@index([room_id], map: "idx_roomimages_room_id")
 }
 
 model rooms {
   id              Int     @id @default(autoincrement())
-  room_type       String  @db.VarChar(255)
+  room_type       String
   capacity        Int
   price_per_night Decimal @db.Decimal(10, 2)
-  amenities       String? @db.Text
-  image_url       String? @db.VarChar(255)
+  amenities       String?
+  image_url       String?
   images          Json?
+
+  bookings    bookings[]    @relation("RoomBookings")
+  room_images room_images[]
 }
 
 model users {
   id            Int       @id @default(autoincrement())
-  username      String    @unique(map: "users_username_unique") @db.VarChar(255)
-  password      String    @db.VarChar(255)
-  email         String    @unique(map: "users_email_unique") @db.VarChar(255)
-  full_name     String    @db.VarChar(255)
-  phone         String?   @db.VarChar(20)
-  address       String?   @db.Text
-  date_of_birth DateTime? @db.Date
-  role          String    @default("guest") @db.VarChar(50)
-  created_at    DateTime? @default(now()) @db.Timestamp(0)
-  updated_at    DateTime? @default(now()) @db.Timestamp(0)
+  username      String    @unique
+  password      String
+  email         String    @unique
+  full_name     String
+  phone         String?
+  address       String?
+  date_of_birth DateTime?
+  role          String    @default("guest")
+  created_at    DateTime? @default(now())
+  updated_at    DateTime? @default(now())
+
+  bookings bookings[]
 }

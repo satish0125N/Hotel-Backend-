@@ -1,0 +1,48 @@
+-- AlterTable
+ALTER TABLE "hotel_info" ALTER COLUMN "hotel_name" SET DATA TYPE TEXT,
+ALTER COLUMN "phone" SET DATA TYPE TEXT,
+ALTER COLUMN "email" SET DATA TYPE TEXT,
+ALTER COLUMN "website" SET DATA TYPE TEXT,
+ALTER COLUMN "check_in_time" SET DATA TYPE TEXT,
+ALTER COLUMN "check_out_time" SET DATA TYPE TEXT,
+ALTER COLUMN "created_at" SET DATA TYPE TIMESTAMP(3),
+ALTER COLUMN "updated_at" SET DATA TYPE TIMESTAMP(3);
+
+-- AlterTable
+ALTER TABLE "password_resets" ALTER COLUMN "email" SET DATA TYPE TEXT,
+ALTER COLUMN "token" SET DATA TYPE TEXT,
+ALTER COLUMN "expires_at" SET DATA TYPE TIMESTAMP(3),
+ALTER COLUMN "created_at" SET DATA TYPE TIMESTAMP(3);
+
+-- AlterTable
+ALTER TABLE "room_images" ALTER COLUMN "image_url" SET DATA TYPE TEXT;
+
+-- AlterTable
+ALTER TABLE "rooms" ALTER COLUMN "room_type" SET DATA TYPE TEXT,
+ALTER COLUMN "image_url" SET DATA TYPE TEXT;
+
+-- AlterTable
+ALTER TABLE "users" ALTER COLUMN "username" SET DATA TYPE TEXT,
+ALTER COLUMN "password" SET DATA TYPE TEXT,
+ALTER COLUMN "email" SET DATA TYPE TEXT,
+ALTER COLUMN "full_name" SET DATA TYPE TEXT,
+ALTER COLUMN "phone" SET DATA TYPE TEXT,
+ALTER COLUMN "date_of_birth" SET DATA TYPE TIMESTAMP(3),
+ALTER COLUMN "role" SET DATA TYPE TEXT,
+ALTER COLUMN "created_at" SET DATA TYPE TIMESTAMP(3),
+ALTER COLUMN "updated_at" SET DATA TYPE TIMESTAMP(3);
+
+-- AddForeignKey
+ALTER TABLE "bookings" ADD CONSTRAINT "bookings_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "bookings" ADD CONSTRAINT "bookings_room_id_fkey" FOREIGN KEY ("room_id") REFERENCES "rooms"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "room_images" ADD CONSTRAINT "room_images_room_id_fkey" FOREIGN KEY ("room_id") REFERENCES "rooms"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- RenameIndex
+ALTER INDEX "users_email_unique" RENAME TO "users_email_key";
+
+-- RenameIndex
+ALTER INDEX "users_username_unique" RENAME TO "users_username_key";
