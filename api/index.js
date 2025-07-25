@@ -82,8 +82,23 @@ const cors = require('cors');
 
 const authRoutes = require('./routes/authRoutes'); // ✅ Correct Path
 
-app.use(express.json());
-app.use(cors({ origin: 'https://hotel-management-with-react.vercel.app', credentials: true }));
+const allowedOrigins = [
+	'http://localhost:5173',
+	'https://hotel-management-with-react.vercel.app',
+];
+
+app.use(
+	cors({
+		origin: function (origin, callback) {
+			if (!origin || allowedOrigins.includes(origin)) {
+				callback(null, true);
+			} else {
+				callback(new Error('Not allowed by CORS'));
+			}
+		},
+		credentials: true,
+	}),
+);
 
 app.use('/api', authRoutes);
 
